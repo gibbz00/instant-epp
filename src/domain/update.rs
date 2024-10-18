@@ -46,6 +46,7 @@ impl<'a> DomainUpdate<'a> {
 /// Type for elements under the `<chg>` tag for domain update
 #[derive(Debug, ToXml)]
 #[xml(rename = "chg", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainChangeInfo<'a> {
     /// The new registrant contact for the domain
     pub registrant: Option<&'a str>,
@@ -56,32 +57,35 @@ pub struct DomainChangeInfo<'a> {
 /// Type for elements under the `<add>` and `<rem>` tags for domain update
 #[derive(Debug, ToXml)]
 #[xml(rename = "add", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainAdd<'a> {
     /// The list of nameservers to add or remove
     /// Type T can be either a `HostObjList` or `HostAttrList`
     pub ns: Option<NameServers<'a>>,
     /// The list of contacts to add to or remove from the domain
-    pub contacts: Option<&'a [DomainContact<'a>]>,
+    pub contacts: Option<Vec<DomainContact<'a>>>,
     /// The list of statuses to add to or remove from the domain
-    pub statuses: Option<&'a [Status]>,
+    pub statuses: Option<Vec<Status>>,
 }
 
 /// Type for elements under the `<add>` and `<rem>` tags for domain update
 #[derive(Debug, ToXml)]
 #[xml(rename = "rem", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainRemove<'a> {
     /// The list of nameservers to add or remove
     /// Type T can be either a `HostObjList` or `HostAttrList`
     pub ns: Option<NameServers<'a>>,
     /// The list of contacts to add to or remove from the domain
-    pub contacts: Option<&'a [DomainContact<'a>]>,
+    pub contacts: Option<Vec<DomainContact<'a>>>,
     /// The list of statuses to add to or remove from the domain
-    pub statuses: Option<&'a [Status]>,
+    pub statuses: Option<Vec<Status>>,
 }
 
 /// Type for elements under the `<update>` tag for domain update
 #[derive(Debug, ToXml)]
 #[xml(rename = "update", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainUpdateRequestData<'a> {
     /// The name of the domain to update
     pub name: &'a str,
@@ -99,7 +103,9 @@ pub struct DomainUpdateRequestData<'a> {
 /// Type for EPP XML `<update>` command for domains
 #[derive(Debug, ToXml)]
 #[xml(rename = "update", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainUpdate<'a> {
+    #[serde(borrow)]
     pub domain: DomainUpdateRequestData<'a>,
 }
 
@@ -119,10 +125,10 @@ mod tests {
         let add = DomainAdd {
             ns: None,
             contacts: None,
-            statuses: Some(&[Status::ClientDeleteProhibited]),
+            statuses: Some(vec![Status::ClientDeleteProhibited]),
         };
 
-        let contacts = &[DomainContact {
+        let contacts = vec![DomainContact {
             contact_type: "billing".into(),
             id: "eppdev-contact-2".into(),
         }];

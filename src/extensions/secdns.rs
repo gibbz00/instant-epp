@@ -631,7 +631,7 @@ mod tests {
                 name: "ns2.example.com".into(),
             }),
         ];
-        let contact = [
+        let contact = vec![
             domain::DomainContact {
                 contact_type: "admin".into(),
                 id: "sh8013".into(),
@@ -647,7 +647,7 @@ mod tests {
             Some(&ns),
             Some("jd1234"),
             "2fooBAR",
-            Some(&contact),
+            Some(contact),
         );
         assert_serialized(
             "request/extensions/secdns_create_ds.xml",
@@ -668,7 +668,7 @@ mod tests {
                 name: "ns2.example.com".into(),
             }),
         ];
-        let contact = [
+        let contact = vec![
             domain::DomainContact {
                 contact_type: "admin".into(),
                 id: "sh8013".into(),
@@ -684,7 +684,7 @@ mod tests {
             Some(&ns),
             Some("jd1234"),
             "2fooBAR",
-            Some(&contact),
+            Some(contact),
         );
         assert_serialized(
             "request/extensions/secdns_create_ds_key.xml",
@@ -704,7 +704,7 @@ mod tests {
                 name: "ns2.example.com".into(),
             }),
         ];
-        let contact = [
+        let contact = vec![
             domain::DomainContact {
                 contact_type: "admin".into(),
                 id: "sh8013".into(),
@@ -720,7 +720,7 @@ mod tests {
             Some(&ns),
             Some("jd1234"),
             "2fooBAR",
-            Some(&contact),
+            Some(contact),
         );
         assert_serialized(
             "request/extensions/secdns_create_key.xml",
