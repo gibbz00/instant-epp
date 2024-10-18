@@ -19,6 +19,7 @@ impl Command for DomainCreate<'_> {
 /// Type for elements under the domain `<create>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 pub struct DomainCreateRequestData<'a> {
     /// The domain name
     pub name: &'a str,
@@ -30,6 +31,7 @@ pub struct DomainCreateRequestData<'a> {
     /// The domain registrant
     pub registrant: Option<&'a str>,
     /// The list of contacts for the domain
+    // IMPROVEMENT: remove option?
     pub contacts: Option<&'a [DomainContact<'a>]>,
     /// The auth info for the domain
     pub auth_info: DomainAuthInfo<'a>,
