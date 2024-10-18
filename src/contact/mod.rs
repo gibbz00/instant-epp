@@ -26,6 +26,8 @@ pub use update::ContactUpdate;
 pub const XMLNS: &str = "urn:ietf:params:xml:ns:contact-1.0";
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Country(celes::Country);
 
 impl<'xml> FromXml<'xml> for Country {
@@ -77,6 +79,7 @@ impl std::ops::Deref for Country {
 /// The `<authInfo>` tag for domain and contact transactions
 #[derive(Clone, Debug, FromXml, PartialEq, ToXml)]
 #[xml(rename = "authInfo", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct ContactAuthInfo<'a> {
     /// The `<pw>` tag under `<authInfo>`
     #[xml(rename = "pw")]
@@ -95,6 +98,7 @@ impl<'a> ContactAuthInfo<'a> {
 /// The data for `<voice>` types on domain transactions
 #[derive(Clone, Debug, FromXml, PartialEq, ToXml)]
 #[xml(rename = "voice", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Voice<'a> {
     /// The value of the 'x' attr on `<voice>` and `<fax>` tags
     #[xml(rename = "x", attribute)]
@@ -122,6 +126,7 @@ impl<'a> Voice<'a> {
 /// The data for `<voice>` and `<fax>` types on domain transactions
 #[derive(Clone, Debug, FromXml, PartialEq, ToXml)]
 #[xml(rename = "fax", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Fax<'a> {
     /// The value of the 'x' attr on `<voice>` and `<fax>` tags
     #[xml(rename = "x", attribute)]
@@ -149,6 +154,7 @@ impl<'a> Fax<'a> {
 /// The `<addr>` type on contact transactions
 #[derive(Clone, Debug, FromXml, ToXml)]
 #[xml(rename = "addr", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Address<'a> {
     /// The `<street>` tags under `<addr>`
     pub street: Vec<Cow<'a, str>>,
@@ -189,6 +195,7 @@ impl<'a> Address<'a> {
 /// The `<postalInfo>` type on contact transactions
 #[derive(Clone, Debug, FromXml, ToXml)]
 #[xml(rename = "postalInfo", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct PostalInfo<'a> {
     /// The 'type' attr on `<postalInfo>`
     #[xml(rename = "type", attribute)]
@@ -221,6 +228,7 @@ impl<'a> PostalInfo<'a> {
 
 #[derive(Debug, Clone, Copy, PartialEq, ToXml, FromXml)]
 #[xml(scalar)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub enum InfoType {
     #[xml(rename = "loc")]
     Local,
@@ -230,6 +238,8 @@ pub enum InfoType {
 
 /// The `<status>` type on contact transactions
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 pub enum Status {
     ClientDeleteProhibited,
     ServerDeleteProhibited,

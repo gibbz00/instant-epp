@@ -19,6 +19,7 @@ impl<'a> Command for ContactCreate<'a> {
 /// Type for elements under the contact `<create>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct ContactCreateRequest<'a> {
     /// Contact `<id>` tag
     id: &'a str,
@@ -73,6 +74,7 @@ impl<'a> ContactCreate<'a> {
 /// Type that represents the `<creData>` tag for contact create response
 #[derive(Debug, FromXml)]
 #[xml(rename = "creData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct CreateData {
     /// The contact id
     pub id: String,
