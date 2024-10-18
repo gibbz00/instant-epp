@@ -38,8 +38,10 @@ pub struct ContactCreateRequest<'a> {
 /// Type for EPP XML `<create>` command for contacts
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct ContactCreate<'a> {
     /// Data for `<create>` command for contact
+    #[serde(borrow)]
     pub contact: ContactCreateRequest<'a>,
 }
 
