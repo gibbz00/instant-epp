@@ -19,6 +19,7 @@ impl Command for ContactCreate<'_> {
 /// Type for elements under the contact `<create>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct ContactCreateRequest<'a> {
     /// Contact `<id>` tag
     id: &'a str,
@@ -37,8 +38,10 @@ pub struct ContactCreateRequest<'a> {
 /// Type for EPP XML `<create>` command for contacts
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct ContactCreate<'a> {
     /// Data for `<create>` command for contact
+    #[serde(borrow)]
     pub contact: ContactCreateRequest<'a>,
 }
 
@@ -73,6 +76,7 @@ impl<'a> ContactCreate<'a> {
 /// Type that represents the `<creData>` tag for contact create response
 #[derive(Debug, FromXml)]
 #[xml(rename = "creData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct CreateData {
     /// The contact id
     pub id: String,
