@@ -151,6 +151,7 @@ pub struct DomainContact<'a> {
 
 /// The `<period>` type for registration, renewal or transfer on domain transactions
 #[derive(Clone, Copy, Debug)]
+#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
 pub enum Period {
     Years(PeriodLength),
     Months(PeriodLength),
@@ -188,6 +189,17 @@ impl ToXml for Period {
         serializer.end_start()?;
         serializer.write_str(&length)?;
         serializer.write_close(None, ELEMENT)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> ::serde::Deserialize<'de> for PeriodLength {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let length = <u8 as ::serde::Deserialize>::deserialize(deserializer)?;
+        Self::new(length).map_err(|err| serde::de::Error::custom(err.to_string()))
     }
 }
 
