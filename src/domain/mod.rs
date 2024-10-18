@@ -212,6 +212,39 @@ impl ToXml for Period {
     }
 }
 
+#[cfg(feature = "serde")]
+mod period_serde {
+    use serde::{Deserialize, Serialize};
+
+    use super::*;
+
+    #[derive(Serialize, Deserialize)]
+    struct PeriodSerde {
+        unit: PerdiodUnit,
+        length: u8,
+    }
+
+    impl<'de> ::serde::Deserialize<'de> for Period {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de>,
+        {
+            let PeriodSerde { unit, length } = PeriodSerde::deserialize(deserializer)?;
+            Self::new(length, unit).map_err(|err| serde::de::Error::custom(err.to_string()))
+        }
+    }
+
+    impl Serialize for Period {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::Serializer,
+        {
+            let Self { unit, length } = *self;
+            PeriodSerde { unit, length }.serialize(serializer)
+        }
+    }
+}
+
 pub const ONE_YEAR: Period = Period {
     unit: PerdiodUnit::Years,
     length: 1,
