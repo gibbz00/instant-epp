@@ -213,7 +213,7 @@ async fn dropped() {
     .await
     .unwrap_err();
 
-    let contacts = &[
+    let contacts = vec![
         DomainContact {
             contact_type: "admin".into(),
             id: "eppdev-contact-3".into(),

@@ -19,7 +19,7 @@ impl Command for DomainCreate<'_> {
 /// Type for elements under the domain `<create>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainCreateRequestData<'a> {
     /// The domain name
     pub name: &'a str,
@@ -32,7 +32,7 @@ pub struct DomainCreateRequestData<'a> {
     pub registrant: Option<&'a str>,
     /// The list of contacts for the domain
     // IMPROVEMENT: remove option?
-    pub contacts: Option<&'a [DomainContact<'a>]>,
+    pub contacts: Option<Vec<DomainContact<'a>>>,
     /// The auth info for the domain
     pub auth_info: DomainAuthInfo<'a>,
 }
@@ -40,10 +40,12 @@ pub struct DomainCreateRequestData<'a> {
 #[derive(Debug, ToXml)]
 /// Type for EPP XML `<create>` command for domains
 #[xml(rename = "create", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainCreate<'a> {
     /// The data for the domain to be created with
     /// T being the type of nameserver list (`HostObjList` or `HostAttrList`)
     /// to be supplied
+    #[serde(borrow)]
     pub domain: DomainCreateRequestData<'a>,
 }
 
@@ -54,7 +56,7 @@ impl<'a> DomainCreate<'a> {
         ns: Option<&'a [HostInfo<'a>]>,
         registrant: Option<&'a str>,
         auth_password: &'a str,
-        contacts: Option<&'a [DomainContact<'a>]>,
+        contacts: Option<Vec<DomainContact<'a>>>,
     ) -> Self {
         Self {
             domain: DomainCreateRequestData {
@@ -98,7 +100,7 @@ mod tests {
 
     #[test]
     fn command() {
-        let contacts = &[
+        let contacts = vec![
             DomainContact {
                 contact_type: "admin".into(),
                 id: "eppdev-contact-3".into(),
@@ -127,7 +129,7 @@ mod tests {
 
     #[test]
     fn command_with_host_obj() {
-        let contacts = &[
+        let contacts = vec![
             DomainContact {
                 contact_type: "admin".into(),
                 id: "eppdev-contact-3".into(),
@@ -164,7 +166,7 @@ mod tests {
 
     #[test]
     fn command_with_host_attr() {
-        let contacts = &[
+        let contacts = vec![
             DomainContact {
                 contact_type: "admin".into(),
                 id: "eppdev-contact-3".into(),
