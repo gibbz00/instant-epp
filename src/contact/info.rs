@@ -56,6 +56,7 @@ pub struct InfoData {
     /// The contact ROID
     pub roid: String,
     /// The list of contact statuses
+    // IMPROVEMENT: use EnumSet?
     pub statuses: Vec<Status>,
     /// The postal info for the contact
     pub postal_info: PostalInfo<'static>,
