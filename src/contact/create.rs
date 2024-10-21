@@ -20,6 +20,7 @@ impl Command for ContactCreate<'_> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ContactCreateRequest<'a> {
     /// Contact `<id>` tag
     id: &'a str,
@@ -39,6 +40,7 @@ pub struct ContactCreateRequest<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(EPP_XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ContactCreate<'a> {
     /// Data for `<create>` command for contact
     #[cfg_attr(feature = "serde", serde(borrow))]
@@ -77,6 +79,7 @@ impl<'a> ContactCreate<'a> {
 #[derive(Debug, FromXml)]
 #[xml(rename = "creData", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct CreateData {
     /// The contact id
     pub id: String,
