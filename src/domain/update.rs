@@ -110,7 +110,7 @@ pub struct DomainUpdateRequestData<'a> {
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainUpdate<'a> {
-    #[cfg_attr(feature = "serde", serde(borrow))]
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     pub domain: DomainUpdateRequestData<'a>,
 }
 

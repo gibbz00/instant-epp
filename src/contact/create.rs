@@ -43,7 +43,7 @@ pub struct ContactCreateRequest<'a> {
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ContactCreate<'a> {
     /// Data for `<create>` command for contact
-    #[cfg_attr(feature = "serde", serde(borrow))]
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     pub contact: ContactCreateRequest<'a>,
 }
 

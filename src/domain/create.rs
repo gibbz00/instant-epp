@@ -47,7 +47,7 @@ pub struct DomainCreate<'a> {
     /// The data for the domain to be created with
     /// T being the type of nameserver list (`HostObjList` or `HostAttrList`)
     /// to be supplied
-    #[cfg_attr(feature = "serde", serde(borrow))]
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     pub domain: DomainCreateRequestData<'a>,
 }
 
