@@ -9,6 +9,7 @@ use crate::request::Extension;
 pub(crate) const EPP_XMLNS: &str = "urn:ietf:params:xml:ns:epp-1.0";
 
 #[derive(Debug, Eq, PartialEq, ToXml)]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct NoExtension;
 
 impl<'xml> FromXml<'xml> for NoExtension {
