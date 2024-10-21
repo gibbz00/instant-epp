@@ -10,14 +10,14 @@ use crate::common::EPP_XMLNS;
 /// Type corresponding to the `<undef>` tag an EPP response XML
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "undef", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Undef;
 
 /// Type corresponding to the `<value>` tag under `<extValue>` in an EPP response XML
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "value", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ResultValue {
     /// The `<undef>` element
@@ -27,7 +27,7 @@ pub struct ResultValue {
 /// Type corresponding to the `<extValue>` tag in an EPP response XML
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "extValue", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ExtValue {
     /// Data under the `<value>` tag
@@ -39,7 +39,7 @@ pub struct ExtValue {
 /// Type corresponding to the `<result>` tag in an EPP response XML
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "result", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct EppResult {
     /// The result code
@@ -54,7 +54,7 @@ pub struct EppResult {
 
 /// Response codes as enumerated in section 3 of RFC 5730
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum ResultCode {
     CommandCompletedSuccessfully = 1000,
@@ -208,7 +208,7 @@ impl<'xml> FromXml<'xml> for ResultCode {
 /// Type corresponding to the `<trID>` tag in an EPP response XML
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "trID", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ResponseTRID {
     /// The client TRID
@@ -222,7 +222,7 @@ pub struct ResponseTRID {
 /// Type corresponding to the `<msgQ>` tag in an EPP response XML
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "msgQ", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct MessageQueue {
     /// The message count
@@ -241,7 +241,7 @@ pub struct MessageQueue {
 
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "msg", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Message {
     #[xml(attribute)]
@@ -254,7 +254,7 @@ pub struct Message {
 /// containing an `<extension>` tag
 #[derive(Debug, FromXml, PartialEq)]
 #[xml(rename = "response", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Response<D, E> {
     /// Data under the `<result>` tag
@@ -272,7 +272,7 @@ pub struct Response<D, E> {
 
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "resData", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ResponseData<D> {
     data: D,
@@ -323,7 +323,7 @@ impl<T, E> Response<T, E> {
 
 #[derive(Debug, Eq, FromXml, PartialEq)]
 #[xml(rename = "extension", ns(EPP_XMLNS))]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Extension<E> {
     pub data: E,
