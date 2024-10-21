@@ -143,7 +143,7 @@ pub enum HostInfo<'a> {
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct NameServers<'a> {
-    pub ns: Cow<'a, [HostInfo<'a>]>,
+    pub ns: Vec<HostInfo<'a>>,
 }
 
 /// The `<contact>` type on domain creation and update requests
