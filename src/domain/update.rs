@@ -105,7 +105,7 @@ pub struct DomainUpdateRequestData<'a> {
 #[xml(rename = "update", ns(EPP_XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct DomainUpdate<'a> {
-    #[serde(borrow)]
+    #[cfg_attr(feature = "serde", serde(borrow))]
     pub domain: DomainUpdateRequestData<'a>,
 }
 

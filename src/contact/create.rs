@@ -41,7 +41,7 @@ pub struct ContactCreateRequest<'a> {
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct ContactCreate<'a> {
     /// Data for `<create>` command for contact
-    #[serde(borrow)]
+    #[cfg_attr(feature = "serde", serde(borrow))]
     pub contact: ContactCreateRequest<'a>,
 }
 
