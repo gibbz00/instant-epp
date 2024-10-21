@@ -30,6 +30,22 @@ pub const XMLNS: &str = "urn:ietf:params:xml:ns:contact-1.0";
 #[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Country(celes::Country);
 
+#[cfg(feature = "schemars")]
+impl ::schemars::JsonSchema for Country {
+    fn schema_name() -> String {
+        "Country".to_string()
+    }
+
+    fn json_schema(_: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        ::schemars::schema::SchemaObject {
+            instance_type: Some(::schemars::schema::InstanceType::String.into()),
+            format: Some("String".to_owned()),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
 impl<'xml> FromXml<'xml> for Country {
     fn matches(id: instant_xml::Id<'_>, _: Option<instant_xml::Id<'_>>) -> bool {
         id == instant_xml::Id {
@@ -80,6 +96,7 @@ impl std::ops::Deref for Country {
 #[derive(Clone, Debug, FromXml, PartialEq, ToXml)]
 #[xml(rename = "authInfo", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ContactAuthInfo<'a> {
     /// The `<pw>` tag under `<authInfo>`
     #[xml(rename = "pw")]
@@ -99,6 +116,7 @@ impl<'a> ContactAuthInfo<'a> {
 #[derive(Clone, Debug, FromXml, PartialEq, ToXml)]
 #[xml(rename = "voice", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Voice<'a> {
     /// The value of the 'x' attr on `<voice>` and `<fax>` tags
     #[xml(rename = "x", attribute)]
@@ -127,6 +145,7 @@ impl<'a> Voice<'a> {
 #[derive(Clone, Debug, FromXml, PartialEq, ToXml)]
 #[xml(rename = "fax", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Fax<'a> {
     /// The value of the 'x' attr on `<voice>` and `<fax>` tags
     #[xml(rename = "x", attribute)]
@@ -155,6 +174,7 @@ impl<'a> Fax<'a> {
 #[derive(Clone, Debug, FromXml, ToXml)]
 #[xml(rename = "addr", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct Address<'a> {
     /// The `<street>` tags under `<addr>`
     pub street: Vec<Cow<'a, str>>,
@@ -196,6 +216,7 @@ impl<'a> Address<'a> {
 #[derive(Clone, Debug, FromXml, ToXml)]
 #[xml(rename = "postalInfo", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct PostalInfo<'a> {
     /// The 'type' attr on `<postalInfo>`
     #[xml(rename = "type", attribute)]
@@ -229,6 +250,7 @@ impl<'a> PostalInfo<'a> {
 #[derive(Debug, Clone, Copy, PartialEq, ToXml, FromXml)]
 #[xml(scalar)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum InfoType {
     #[xml(rename = "loc")]
     Local,
@@ -240,6 +262,7 @@ pub enum InfoType {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum Status {
     ClientDeleteProhibited,
     ServerDeleteProhibited,
