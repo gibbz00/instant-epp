@@ -162,7 +162,7 @@ pub struct DomainContact<'a> {
 
 /// The `<period>` type for registration, renewal or transfer on domain transactions
 #[derive(Clone, Copy, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum Period {
     Years(PeriodLength),
@@ -170,6 +170,8 @@ pub enum Period {
 }
 
 #[derive(Clone, Copy, Debug)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct PeriodLength(u8);
 
