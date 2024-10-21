@@ -39,6 +39,7 @@ pub const XMLNS: &str = "urn:ietf:params:xml:ns:domain-1.0";
 #[derive(Clone, Debug, Eq, FromXml, PartialEq, ToXml)]
 #[xml(rename = "hostAttr", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct HostAttr<'a> {
     /// The `<hostName>` tag
     #[xml(rename = "hostName")]
@@ -122,6 +123,7 @@ pub(crate) fn serialize_host_addrs_option<T: AsRef<[IpAddr]>, W: fmt::Write + ?S
 #[derive(Clone, Debug, Eq, FromXml, PartialEq, ToXml)]
 #[xml(rename = "hostObj", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct HostObj<'a> {
     #[xml(direct)]
     pub name: Cow<'a, str>,
@@ -130,6 +132,7 @@ pub struct HostObj<'a> {
 #[derive(Clone, Debug, Eq, FromXml, PartialEq, ToXml)]
 #[xml(forward)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum HostInfo<'a> {
     Attr(HostAttr<'a>),
     Obj(HostObj<'a>),
@@ -138,6 +141,7 @@ pub enum HostInfo<'a> {
 #[derive(Debug, FromXml, ToXml)]
 #[xml(rename = "ns", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct NameServers<'a> {
     pub ns: Cow<'a, [HostInfo<'a>]>,
 }
@@ -146,6 +150,7 @@ pub struct NameServers<'a> {
 #[derive(Debug, FromXml, ToXml)]
 #[xml(rename = "contact", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainContact<'a> {
     /// The contact type attr (usually admin, billing, or tech in most registries)
     #[xml(attribute, rename = "type")]
@@ -158,12 +163,14 @@ pub struct DomainContact<'a> {
 /// The `<period>` type for registration, renewal or transfer on domain transactions
 #[derive(Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum Period {
     Years(PeriodLength),
     Months(PeriodLength),
 }
 
 #[derive(Clone, Copy, Debug)]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct PeriodLength(u8);
 
 impl PeriodLength {
@@ -223,6 +230,7 @@ pub const SIX_MONTHS: Period = Period::Months(PeriodLength(6));
 #[derive(Clone, Debug, FromXml, ToXml)]
 #[xml(rename = "authInfo", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainAuthInfo<'a> {
     /// The `<pw>` tag under `<authInfo>`
     #[xml(rename = "pw")]
@@ -241,6 +249,7 @@ impl<'a> DomainAuthInfo<'a> {
 /// The `<status>` type on contact transactions
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub enum Status {
     ClientDeleteProhibited,
     ServerDeleteProhibited,
