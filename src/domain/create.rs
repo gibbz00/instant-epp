@@ -20,6 +20,7 @@ impl Command for DomainCreate<'_> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainCreateRequestData<'a> {
     /// The domain name
     pub name: &'a str,
@@ -41,6 +42,7 @@ pub struct DomainCreateRequestData<'a> {
 /// Type for EPP XML `<create>` command for domains
 #[xml(rename = "create", ns(EPP_XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainCreate<'a> {
     /// The data for the domain to be created with
     /// T being the type of nameserver list (`HostObjList` or `HostAttrList`)
@@ -76,6 +78,8 @@ impl<'a> DomainCreate<'a> {
 /// Type that represents the `<chkData>` tag for domain create response
 #[derive(Debug, FromXml)]
 #[xml(rename = "creData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct CreateData {
     /// The domain name
     pub name: String,

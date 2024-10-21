@@ -47,6 +47,7 @@ impl<'a> DomainUpdate<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "chg", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainChangeInfo<'a> {
     /// The new registrant contact for the domain
     pub registrant: Option<&'a str>,
@@ -58,6 +59,7 @@ pub struct DomainChangeInfo<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "add", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainAdd<'a> {
     /// The list of nameservers to add or remove
     /// Type T can be either a `HostObjList` or `HostAttrList`
@@ -72,6 +74,7 @@ pub struct DomainAdd<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "rem", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainRemove<'a> {
     /// The list of nameservers to add or remove
     /// Type T can be either a `HostObjList` or `HostAttrList`
@@ -86,6 +89,7 @@ pub struct DomainRemove<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "update", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainUpdateRequestData<'a> {
     /// The name of the domain to update
     pub name: &'a str,
@@ -104,6 +108,7 @@ pub struct DomainUpdateRequestData<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "update", ns(EPP_XMLNS))]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct DomainUpdate<'a> {
     #[cfg_attr(feature = "serde", serde(borrow))]
     pub domain: DomainUpdateRequestData<'a>,
