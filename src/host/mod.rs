@@ -27,6 +27,7 @@ pub const XMLNS: &str = "urn:ietf:params:xml:ns:host-1.0";
 
 /// The `<status>` type on contact transactions
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Status {
     ClientDeleteProhibited,
     ServerDeleteProhibited,

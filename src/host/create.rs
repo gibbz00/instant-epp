@@ -1,5 +1,6 @@
 //! Types for EPP host create request
 
+use std::borrow::Cow;
 use std::net::IpAddr;
 
 use chrono::{DateTime, Utc};
@@ -19,7 +20,10 @@ impl Command for HostCreate<'_> {
 impl<'a> HostCreate<'a> {
     pub fn new(name: &'a str, addresses: Option<&'a [IpAddr]>) -> Self {
         Self {
-            host: HostCreateRequest { name, addresses },
+            host: HostCreateRequest {
+                name,
+                addresses: addresses.map(Cow::Borrowed),
+            },
         }
     }
 }
@@ -29,19 +33,22 @@ impl<'a> HostCreate<'a> {
 /// Type for data under the host `<create>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct HostCreateRequest<'a> {
     /// The name of the host to be created
     pub name: &'a str,
     /// The list of IP addresses for the host
     #[xml(serialize_with = "serialize_host_addrs_option")]
-    pub addresses: Option<&'a [IpAddr]>,
+    pub addresses: Option<Cow<'a, [IpAddr]>>,
 }
 
 /// Type for EPP XML `<create>` command for hosts
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct HostCreate<'a> {
     /// The instance holding the data for the host to be created
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     host: HostCreateRequest<'a>,
 }
 
@@ -50,6 +57,7 @@ pub struct HostCreate<'a> {
 /// Type that represents the `<creData>` tag for host create response
 #[derive(Debug, FromXml)]
 #[xml(rename = "creData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct CreateData {
     /// The host name
     pub name: String,
