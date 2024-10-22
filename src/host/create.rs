@@ -34,6 +34,7 @@ impl<'a> HostCreate<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostCreateRequest<'a> {
     /// The name of the host to be created
     pub name: &'a str,
@@ -46,6 +47,7 @@ pub struct HostCreateRequest<'a> {
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(EPP_XMLNS))]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostCreate<'a> {
     /// The instance holding the data for the host to be created
     #[cfg_attr(feature = "serde", serde(borrow, flatten))]
@@ -58,6 +60,7 @@ pub struct HostCreate<'a> {
 #[derive(Debug, FromXml)]
 #[xml(rename = "creData", ns(XMLNS))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CreateData {
     /// The host name
     pub name: String,
