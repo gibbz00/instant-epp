@@ -19,8 +19,11 @@ impl Extension for CreateData<'_> {
 
 #[derive(Debug, ToXml)]
 #[xml(rename = "create", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CreateData<'a> {
-    data: DsOrKeyType<'a>,
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
+    pub data: DsOrKeyType<'a>,
 }
 
 impl<'a> From<&'a [DsDataType<'a>]> for CreateData<'a> {
@@ -78,6 +81,8 @@ pub struct InfoData;
 
 #[derive(Debug, FromXml)]
 #[xml(rename = "infData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct InfoDataResponse<'a> {
     pub data: DsOrKeyType<'a>,
 }
@@ -99,6 +104,8 @@ mod update {
     // NOTE: Per RFC 5910 (paraphased): "At least one add, rem, or change element MUST be provided."
     // Feels excessive to enforce this with the type system, this will do for now.
     #[derive(Debug)]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
     pub struct UpdateData<'a> {
         /// Ask the server operator to process the request with high priority
         ///
@@ -165,6 +172,8 @@ mod update {
     }
 
     #[derive(Debug)]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
     pub enum RemoveData<'a> {
         All,
         DsOrKey(DsOrKeyData<'a>),
@@ -197,12 +206,16 @@ mod update {
 /// Struct supporting either the `dsData` or the `keyData` interface.
 #[derive(Debug, ToXml, FromXml)]
 #[xml(transparent)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct DsOrKeyType<'a> {
     maximum_signature_lifetime: Option<MaximumSignatureLifeTime>,
     data: DsOrKeyData<'a>,
 }
 
 #[derive(Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct MaximumSignatureLifeTime(pub Duration);
 
 impl MaximumSignatureLifeTime {
@@ -254,6 +267,8 @@ impl<'xml> FromXml<'xml> for MaximumSignatureLifeTime {
 
 #[derive(Debug, ToXml, FromXml)]
 #[xml(forward)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub enum DsOrKeyData<'a> {
     DsData(Cow<'a, [DsDataType<'a>]>),
     KeyData(Cow<'a, [KeyDataType<'a>]>),
@@ -261,6 +276,8 @@ pub enum DsOrKeyData<'a> {
 
 #[derive(Debug, Clone, ToXml, FromXml)]
 #[xml(rename = "dsData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct DsDataType<'a> {
     #[xml(rename = "keyTag")]
     key_tag: u16,
@@ -297,6 +314,8 @@ impl<'a> DsDataType<'a> {
 // XXX Do NOT derive PartialEq, Hash or Ord because the variant
 // Other(u8) could clash with one of the other variants. They have to
 // be hand coded.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub enum DigestAlgorithm {
     Sha1,
     Sha256,
@@ -338,6 +357,8 @@ crate::xml::to_scalar!(DigestAlgorithm, u8);
 // XXX Do NOT derive PartialEq, Hash or Ord because the variant
 // Other(u8) could clash with one of the other variants. They have to
 // be hand coded.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub enum Algorithm {
     // Delete DS
     Delete,
@@ -436,6 +457,8 @@ crate::xml::to_scalar!(Algorithm, u8);
 
 #[derive(Debug, Clone, ToXml, FromXml)]
 #[xml(rename = "keyData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct KeyDataType<'a> {
     flags: Flags,
     protocol: Protocol,
@@ -462,6 +485,8 @@ impl<'a> KeyDataType<'a> {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct Flags {
     /// Zone Key flag. If `true` then the DNSKEY record holds a DNS
     /// zone key. If `false` then the DNSKEY record holds some other
@@ -517,6 +542,8 @@ pub const FLAGS_DNS_ZONE_KEY_SEP: Flags = Flags {
 // XXX Do NOT derive PartialEq, Hash or Ord because the variant
 // Other(u8) could clash with one of the other variants. They have to
 // be hand coded.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub enum Protocol {
     /// RFC 2535, reserved
     Tls,
