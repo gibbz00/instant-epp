@@ -32,6 +32,8 @@ impl<'a> DomainInfo<'a> {
 /// Type for data under the `<name>` element tag for the domain `<info>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "name", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct Domain<'a> {
     /// The hosts attribute. Default value is "all"
     #[xml(attribute)]
@@ -44,8 +46,11 @@ pub struct Domain<'a> {
 /// Type for `<name>` element under the domain `<info>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "info", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct DomainInfoRequestData<'a> {
     /// The data for the domain to be queried
+    #[cfg_attr(feature = "serde", serde(borrow))]
     name: Domain<'a>,
     /// The auth info for the domain
     auth_info: Option<DomainAuthInfo<'a>>,
@@ -54,8 +59,11 @@ pub struct DomainInfoRequestData<'a> {
 #[derive(Debug, ToXml)]
 /// Type for EPP XML `<info>` command for domains
 #[xml(rename = "info", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct DomainInfo<'a> {
     /// The data under the `<info>` tag for domain info
+    #[cfg_attr(feature = "serde", serde(flatten, borrow))]
     info: DomainInfoRequestData<'a>,
 }
 
@@ -75,6 +83,8 @@ pub struct DomainNsList {
 /// Type that represents the `<infData>` tag for domain info response
 #[derive(Debug, FromXml)]
 #[xml(rename = "infData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct InfoData {
     /// The domain name
     pub name: String,
