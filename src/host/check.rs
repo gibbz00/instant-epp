@@ -1,5 +1,6 @@
 //! Types for EPP host check request
 
+use std::borrow::Cow;
 use std::fmt::{self, Debug};
 
 use instant_xml::{FromXml, Serializer, ToXml};
@@ -22,29 +23,36 @@ impl Command for HostCheck<'_> {
 #[xml(rename = "check", ns(XMLNS))]
 struct HostCheckData<'a> {
     /// List of hosts to be checked for availability
-    name: &'a [&'a str],
+    name: Vec<Cow<'a, str>>,
 }
 
 fn serialize_hosts<W: fmt::Write + ?Sized>(
-    hosts: &[&str],
+    hosts: &Vec<Cow<'_, str>>,
     serializer: &mut Serializer<W>,
 ) -> Result<(), instant_xml::Error> {
-    HostCheckData { name: hosts }.serialize(None, serializer)
+    HostCheckData {
+        name: hosts.to_owned(),
+    }
+    .serialize(None, serializer)
 }
 
 /// The EPP `check` command for hosts
 #[derive(Clone, Debug, ToXml)]
 #[xml(rename = "check", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostCheck<'a> {
     /// The list of hosts to be checked
     #[xml(serialize_with = "serialize_hosts")]
-    pub hosts: &'a [&'a str],
+    pub hosts: Vec<Cow<'a, str>>,
 }
 
 // Response
 
 #[derive(Debug, FromXml)]
 #[xml(rename = "name", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct Checked {
     #[xml(attribute, rename = "avail")]
     pub available: bool,
@@ -56,6 +64,8 @@ pub struct Checked {
 
 #[derive(Debug, FromXml)]
 #[xml(rename = "cd", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CheckedHost {
     /// Data under the `<cd>` tag
     #[xml(rename = "cd")]
@@ -65,6 +75,8 @@ pub struct CheckedHost {
 /// Type that represents the `<chkData>` tag for host check response
 #[derive(Debug, FromXml)]
 #[xml(rename = "chkData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CheckData {
     pub list: Vec<CheckedHost>,
 }
@@ -78,7 +90,7 @@ mod tests {
     #[test]
     fn command() {
         let object = HostCheck {
-            hosts: &["ns1.eppdev-1.com", "host1.eppdev-1.com"],
+            hosts: vec!["ns1.eppdev-1.com".into(), "host1.eppdev-1.com".into()],
         };
         assert_serialized("request/host/check.xml", &object);
     }

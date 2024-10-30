@@ -30,6 +30,8 @@ impl<'a> HostInfo<'a> {
 /// Type for data under the host `<info>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "info", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostInfoRequestData<'a> {
     /// The name of the host to be queried
     name: &'a str,
@@ -38,9 +40,12 @@ pub struct HostInfoRequestData<'a> {
 /// Type for EPP XML `<info>` command for hosts
 #[derive(Debug, ToXml)]
 #[xml(rename = "info", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostInfo<'a> {
     /// The instance holding the data for the host query
     #[xml(rename = "host:info")]
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     info: HostInfoRequestData<'a>,
 }
 
@@ -49,6 +54,8 @@ pub struct HostInfo<'a> {
 /// Type that represents the `<infData>` tag for host info response
 #[derive(Debug, FromXml)]
 #[xml(rename = "infData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct InfoData {
     /// The host name
     pub name: String,

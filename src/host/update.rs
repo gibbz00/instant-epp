@@ -1,5 +1,6 @@
 //! Types for EPP host update request
 
+use std::borrow::Cow;
 use std::net::IpAddr;
 
 use instant_xml::ToXml;
@@ -19,7 +20,7 @@ impl<'a> HostUpdate<'a> {
     pub fn new(name: &'a str) -> Self {
         Self {
             host: HostUpdateRequest {
-                name,
+                name: name.into(),
                 add: None,
                 remove: None,
                 change_info: None,
@@ -33,12 +34,12 @@ impl<'a> HostUpdate<'a> {
     }
 
     /// Sets the data for the `<add>` element of the host update
-    pub fn add(&mut self, add: HostAdd<'a>) {
+    pub fn add(&mut self, add: HostAdd) {
         self.host.add = Some(add);
     }
 
     /// Sets the data for the `<rem>` element of the host update
-    pub fn remove(&mut self, remove: HostRemove<'a>) {
+    pub fn remove(&mut self, remove: HostRemove) {
         self.host.remove = Some(remove);
     }
 }
@@ -46,6 +47,8 @@ impl<'a> HostUpdate<'a> {
 /// Type for data under the `<chg>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "chg", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostChangeInfo<'a> {
     /// The new name for the host
     pub name: &'a str,
@@ -54,49 +57,59 @@ pub struct HostChangeInfo<'a> {
 /// Type for data under the `<add>` and `<rem>` tags
 #[derive(Debug, ToXml)]
 #[xml(rename = "add", ns(XMLNS))]
-pub struct HostAdd<'a> {
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+pub struct HostAdd {
     /// The IP addresses to be added to or removed from the host
     #[xml(rename = "host:addr", serialize_with = "serialize_host_addrs_option")]
-    pub addresses: Option<&'a [IpAddr]>,
+    pub addresses: Option<Vec<IpAddr>>,
     /// The statuses to be added to or removed from the host
     #[xml(rename = "host:status")]
-    pub statuses: Option<&'a [Status]>,
+    pub statuses: Option<Vec<Status>>,
 }
 
 /// Type for data under the `<add>` and `<rem>` tags
 #[derive(Debug, ToXml)]
 #[xml(rename = "rem", ns(XMLNS))]
-pub struct HostRemove<'a> {
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+pub struct HostRemove {
     /// The IP addresses to be added to or removed from the host
     #[xml(rename = "host:addr", serialize_with = "serialize_host_addrs_option")]
-    pub addresses: Option<&'a [IpAddr]>,
+    pub addresses: Option<Vec<IpAddr>>,
     /// The statuses to be added to or removed from the host
     #[xml(rename = "host:status")]
-    pub statuses: Option<&'a [Status]>,
+    pub statuses: Option<Vec<Status>>,
 }
 
 /// Type for data under the host `<update>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "update", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostUpdateRequest<'a> {
     /// The name of the host
-    name: &'a str,
+    name: Cow<'a, str>,
     /// The IP addresses and statuses to be added to the host
     #[xml(rename = "host:add")]
-    add: Option<HostAdd<'a>>,
+    add: Option<HostAdd>,
     /// The IP addresses and statuses to be removed from the host
     #[xml(rename = "host:rem")]
-    remove: Option<HostRemove<'a>>,
+    remove: Option<HostRemove>,
     /// The host details that need to be updated
     #[xml(rename = "host:chg")]
+    #[cfg_attr(feature = "serde", serde(borrow))]
     change_info: Option<HostChangeInfo<'a>>,
 }
 
 /// Type for EPP XML `<update>` command for hosts
 #[derive(Debug, ToXml)]
 #[xml(rename = "update", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostUpdate<'a> {
     /// The instance holding the data for the host to be updated
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     host: HostUpdateRequest<'a>,
 }
 
@@ -109,7 +122,7 @@ mod tests {
 
     #[test]
     fn command() {
-        let addr = &[IpAddr::from([
+        let addr = vec![IpAddr::from([
             0x2404, 0x6800, 0x4001, 0x801, 0, 0, 0, 0x200e,
         ])];
 
@@ -120,7 +133,7 @@ mod tests {
 
         let remove = HostRemove {
             addresses: None,
-            statuses: Some(&[Status::ClientDeleteProhibited]),
+            statuses: Some(vec![Status::ClientDeleteProhibited]),
         };
 
         let mut object = HostUpdate::new("host1.eppdev-1.com");

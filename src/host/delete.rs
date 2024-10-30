@@ -24,6 +24,8 @@ impl<'a> HostDelete<'a> {
 /// Type for data under the host `<delete>` tag
 #[derive(Debug, ToXml)]
 #[xml(rename = "delete", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostDeleteRequest<'a> {
     /// The host to be deleted
     name: &'a str,
@@ -32,8 +34,11 @@ pub struct HostDeleteRequest<'a> {
 /// Type for EPP XML `<delete>` command for hosts
 #[derive(Debug, ToXml)]
 #[xml(rename = "delete", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct HostDelete<'a> {
     /// The instance holding the data for the host to be deleted
+    #[cfg_attr(feature = "serde", serde(borrow, flatten))]
     host: HostDeleteRequest<'a>,
 }
 
