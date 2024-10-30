@@ -21,7 +21,7 @@ pub struct Undef;
 #[cfg_attr(feature = "schemars", derive(::schemars::JsonSchema))]
 pub struct ResultValue {
     /// The `<undef>` element
-    pub undef: Undef,
+    pub undef: Option<Undef>,
 }
 
 /// Type corresponding to the `<extValue>` tag in an EPP response XML
