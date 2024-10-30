@@ -1,5 +1,7 @@
 //! Types for EPP contact delete request
 
+use std::borrow::Cow;
+
 use instant_xml::ToXml;
 
 use super::XMLNS;
@@ -16,23 +18,28 @@ impl Command for ContactDelete<'_> {
 /// Type containing the data for the `<delete>` tag for contacts
 #[derive(Debug, ToXml)]
 #[xml(rename = "delete", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct ContactDeleteRequest<'a> {
     /// The id of the contact to be deleted
-    id: &'a str,
+    id: Cow<'a, str>,
 }
 
 /// The `<delete>` type for the contact delete EPP command
 #[derive(Debug, ToXml)]
 #[xml(rename = "delete", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct ContactDelete<'a> {
     /// The data for the `<delete>` tag for a contact delete command
+    #[cfg_attr(feature = "serde", serde(flatten))]
     contact: ContactDeleteRequest<'a>,
 }
 
 impl<'a> ContactDelete<'a> {
     pub fn new(id: &'a str) -> Self {
         Self {
-            contact: ContactDeleteRequest { id },
+            contact: ContactDeleteRequest { id: id.into() },
         }
     }
 }
