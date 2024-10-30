@@ -74,7 +74,6 @@ pub struct CheckedContact {
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CheckData {
-    #[cfg_attr(feature = "serde", serde(flatten))]
     pub list: Vec<CheckedContact>,
 }
 
