@@ -1,5 +1,6 @@
 //! Types for EPP contact check request
 
+use std::borrow::Cow;
 use std::fmt::{self, Debug};
 
 use instant_xml::{FromXml, Serializer, ToXml};
@@ -22,28 +23,32 @@ impl Command for ContactCheck<'_> {
 #[xml(rename = "check", ns(XMLNS))]
 struct ContactList<'a> {
     /// The list of contact ids to check for availability
-    id: &'a [&'a str],
+    id: &'a Vec<Cow<'a, str>>,
 }
 
 fn serialize_contacts<W: fmt::Write + ?Sized>(
-    ids: &[&str],
+    id: &Vec<Cow<'_, str>>,
     serializer: &mut Serializer<W>,
 ) -> Result<(), instant_xml::Error> {
-    ContactList { id: ids }.serialize(None, serializer)
+    ContactList { id }.serialize(None, serializer)
 }
 
 /// The EPP `check` command for contacts
 #[derive(Clone, Debug, ToXml)]
 #[xml(rename = "check", ns(EPP_XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct ContactCheck<'a> {
     #[xml(serialize_with = "serialize_contacts")]
-    pub contact_ids: &'a [&'a str],
+    pub contact_ids: Vec<Cow<'a, str>>,
 }
 
 // Response
 
 #[derive(Debug, FromXml)]
 #[xml(rename = "id", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct Checked {
     #[xml(attribute, rename = "avail")]
     pub available: bool,
@@ -55,15 +60,21 @@ pub struct Checked {
 
 #[derive(Debug, FromXml)]
 #[xml(rename = "cd", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CheckedContact {
     /// Data under the `<cd>` tag
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub inner: Checked,
 }
 
 /// Type that represents the `<chkData>` tag for host check response
 #[derive(Debug, FromXml)]
 #[xml(rename = "chkData", ns(XMLNS))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CheckData {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub list: Vec<CheckedContact>,
 }
 
@@ -76,7 +87,7 @@ mod tests {
     #[test]
     fn command() {
         let object = ContactCheck {
-            contact_ids: &["eppdev-contact-1", "eppdev-contact-2"],
+            contact_ids: vec!["eppdev-contact-1".into(), "eppdev-contact-2".into()],
         };
         assert_serialized("request/contact/check.xml", &object);
     }
