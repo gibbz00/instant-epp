@@ -33,7 +33,7 @@ pub struct ContactCreateRequest<'a> {
     /// Contact `<email>` tag
     email: &'a str,
     /// Contact `<authInfo>` tag
-    auth_info: ContactAuthInfo<'a>,
+    auth_info: Option<ContactAuthInfo<'a>>,
 }
 
 /// Type for EPP XML `<create>` command for contacts
@@ -62,7 +62,7 @@ impl<'a> ContactCreate<'a> {
                 voice,
                 fax: None,
                 email,
-                auth_info: ContactAuthInfo::new(auth_password),
+                auth_info: Some(ContactAuthInfo::new(auth_password)),
             },
         }
     }
